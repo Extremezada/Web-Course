@@ -1,3 +1,4 @@
+
 const cidades = ['Caçador','Salvador', 'Chapecó', 'Xaxim', 'Xanxere']
 cidades.sort()
 

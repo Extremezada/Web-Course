@@ -1,3 +1,4 @@
+
 const comidas = ['Arroz', 'Feijão', 'Lasanha', 'Pizaa']
 console.log(comidas)
 
@@ -31,3 +32,15 @@ console.log(comidas)
 // Cria outro array com base em outro a partir do parametro
 const comdias2 = comidas.slice(1,3)
 console.log(comidas, '\n',comdias2)
+
+/*
+comidas.concat()
+
+comidas.map()
+
+comidas.reduce()
+
+comidas.filter()
+
+comidas.forEach()
+*/
