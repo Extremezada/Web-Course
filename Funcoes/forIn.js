@@ -1,8 +1,6 @@
 
 const notas = [1.2, 4.2, 5.5, 7.2]
 
-
-
 for(let i in notas){
     console.log(i, notas[i])
 }
