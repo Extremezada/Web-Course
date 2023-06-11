@@ -1,5 +1,6 @@
 
 teste = [10, 70, 22, 43]
+
 function soPares(array){
     const newArray = []
     for(let num in array){

@@ -30,10 +30,16 @@ comidas.splice(2,2)
 console.log(comidas)
 
 // Cria outro array com base em outro a partir do parametro
-const comdias2 = comidas.slice(1,3)
-console.log(comidas, '\n',comdias2)
+const comidas2 = comidas.slice(1,3)
+console.log(comidas, '\n',comidas2)
+
+// Verifica se o elemento do parâmetro está presente no array e retorna true ou false.
+const comidas3 = comidas2.includes("Arroz")
+console.log(comidas3)
 
 /*
+split() >> usado para criar um array a partir de uma string, usando limitador definido no parâmetro
+
 comidas.concat()
 
 comidas.map()
