@@ -19,6 +19,10 @@
     "gulp-typescript": "4.0.2",
     "gulp-uglify": "3.0.0",
     "gulp-uglifycss": "1.0.9",
+    "node-sass": "^9.0.0",
     "typescript": "2.8.3"
+  },
+  "dependencies": {
+    "sass": "^1.66.1"
   }
 }
