@@ -5,8 +5,7 @@ import NavItem from "./NavItem";
 export default props =>
     <aside className="menu-area">
         <nav className="menu">
-            {/* Refatorar */}
-            <NavItem icon="home" text="Início" />
-            <NavItem icon="user" text="Usuário" />
+            <NavItem nav="/" icon="home" text="Início" />
+            <NavItem nav="/users" icon="user" text="Usuário" />
         </nav>
     </aside>
