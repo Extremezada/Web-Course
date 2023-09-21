@@ -1,0 +1,12 @@
+import Link from "next/link"
+
+export default function Incicio(){
+    
+    return (
+        <div>
+            <Link href="/estiloso">
+                Estiloso
+            </Link>
+        </div>
+    )
+}
