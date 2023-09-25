@@ -17,6 +17,7 @@ export default function Incicio(){
             <Navegador nomePg="Navegação #02" destino="/client/sp-22/123" cor="red" />
             <Navegador nomePg="Componente de estado" destino="/estado" cor="yellow" />
             <Navegador nomePg="API" destino="/integracao" cor="crimson" />
+            <Navegador nomePg="Conteúdo estático" destino="/estatico" cor="black" />
 
         </div>
     )
