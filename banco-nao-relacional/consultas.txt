@@ -1,0 +1,8 @@
+db.<nome da collection>.find({chave:"valor"})
+db.<nome da collection>.find({chave:"valor"}, {_id:0})
+db.<nome da collection>.find({$or:[{chave:"valor"}, {_id:0}]})
+db.<nome da collection>.find({populacao: {$exists:true} }).pretty()
+db.<nome da collection>.count()
+
+db.<nome da collection>.find({chave:"valor"}).skip().limit()
+

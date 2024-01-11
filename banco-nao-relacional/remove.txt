@@ -1,0 +1,2 @@
+db.estados.remove({sigla:"AL"})
+db.estados.remove({populacao:{$exists: true} })

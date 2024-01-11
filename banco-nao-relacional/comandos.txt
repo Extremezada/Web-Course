@@ -1,0 +1,12 @@
+Comandos para BD
+
+show collections
+
+show dbs
+
+use <nome do banco>
+
+db.creatCollection('nome da collection')
+
+db.nome da collection.drop()
+
