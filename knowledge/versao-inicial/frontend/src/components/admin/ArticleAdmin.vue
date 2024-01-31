@@ -1,0 +1,125 @@
+<template>
+    <div class="article-admin">
+        <b-form>
+            <input id="article-id" type="hidden" v-model="article.id" />
+            <b-form-group label="Nome:" label-for="article-name">
+                <b-form-input id="article-name" type="text" v-model="article.name" required :readonly="mode === 'remove'" placeholder="Informe o Nome do Artigo..."/>
+            </b-form-group>
+            <b-form-group label="Descrição:" label-for="article-description">
+                <b-form-input id="article-description" type="text" v-model="article.description" required :readonly="mode === 'remove'" placeholder="Informe a Descrição do Artigo..."/>
+            </b-form-group>
+            <b-form-group  label="Imagem (URL):" labe-for="article-imgUrl">
+                <b-form-input id="article-imgUrl" :options="articles" v-model="article.imgUrl"
+                    placeholder="Informe a URL da Imagem:">
+                </b-form-input>
+            </b-form-group>
+            <b-form-group v-show="mode === 'save'" label="Categoria:" labe-for="category-parentID">
+                <b-form-select id="category-parentID" :options="articles" v-model="article.parentID">
+                </b-form-select>
+            </b-form-group>
+            <b-form-group  v-show="mode==='save'" label="Autor:" labe-for="article-author">
+                <b-form-select id="article-imgUrl" :options="categories" v-model="article.author">
+                </b-form-select>
+            </b-form-group>
+            <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
+            <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
+            <b-button class="ml-2" @click="reset">Cancelar</b-button>
+            <hr>
+        </b-form>
+        <b-table class="mt-2" hover striped :items="articles" :fields="fields">
+            <template slot="cell(actions)" slot-scope="data">
+                <b-button variant="warning" @click="loadArticle(data.item)" class="mr-2">
+                    <i class="fa fa-pencil"></i>
+                </b-button>
+                <b-button variant="danger" @click="loadArticle(data.item, 'remove')">
+                    <i class="fa fa-trash"></i>
+                </b-button>
+            </template>
+        </b-table>
+    </div>
+</template>
+
+<script>
+import { baseApiUrl, showError } from "@/global";
+import axios from "axios";
+
+export default {
+    name: "ArticleAdmin",
+    data: function () {
+        return {
+            mode: "save",
+            article: {},
+            articles: [],
+            fields: [
+                { key: "id", label: "Código", sortable: true },
+                { key: "name", label: "Nome", sortable: true },
+                { key: "description", label: "Descrição", sortable: true },
+                { key: "actions", label: "Ações" },
+            ],
+        };
+    },
+    methods: {
+        loadArticles() {
+            const url = `${baseApiUrl}/articles`;
+            axios.get(url).then((res) => {
+                this.articles = res.data.map((article) => {
+                    return {
+                        ...article,
+                        value: article.id,
+                        text: article.description,
+                    };
+                });
+            });
+        },
+        reset() {
+            (this.mode = "save"), (this.article = {}), this.loadArticles();
+        },
+        save() {
+            const method = this.article.id ? "put" : "post";
+            const id = this.article.id ? `/${this.article.id}` : "";
+            axios[method](`${baseApiUrl}/articles${id}`, this.article)
+                .then(() => {
+                    this.$toasted.global.defaultSuccess();
+                    this.reset();
+                })
+                .catch(showError);
+        },
+        remove() {
+            const id = this.article.id;
+            axios
+                .delete(`${baseApiUrl}/articles/${id}`)
+                .then(() => {
+                    this.$toasted.global.defaultSuccess();
+                    this.reset();
+                })
+                .catch(showError);
+        },
+        loadArticle(article, mode = "save") {
+            this.mode = mode;
+            this.article = { ...article };
+        },
+        loadCategories() {
+            const url = `${baseApiUrl}/categories`;
+            axios.get(url).then((res) => {
+                this.categories = res.data.map((category) => {
+                    return {
+                        ...category,
+                        value: category.id,
+                        text: category.path,
+                    };
+                });
+            });
+        },
+        loadCategory(category, mode = "save") {
+            this.mode = mode;
+            this.category = { ...category };
+        }
+    },
+    mounted() {
+        this.loadArticles();
+    },
+};
+</script>
+
+<style>
+</style>
