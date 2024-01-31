@@ -8,18 +8,21 @@
             <b-form-group label="Descrição:" label-for="article-description">
                 <b-form-input id="article-description" type="text" v-model="article.description" required :readonly="mode === 'remove'" placeholder="Informe a Descrição do Artigo..."/>
             </b-form-group>
-            <b-form-group  label="Imagem (URL):" labe-for="article-imgUrl">
-                <b-form-input id="article-imgUrl" :options="articles" v-model="article.imgUrl"
+            <b-form-group  label="Imagem (URL):" labe-for="article-imageUrl">
+                <b-form-input id="article-imageUrl" :options="articles" v-model="article.imageUrl"
                     placeholder="Informe a URL da Imagem:">
                 </b-form-input>
             </b-form-group>
-            <b-form-group v-show="mode === 'save'" label="Categoria:" labe-for="category-parentID">
-                <b-form-select id="category-parentID" :options="articles" v-model="article.parentID">
+            <b-form-group v-show="mode === 'save'" label="Categoria:" labe-for="article-categoryID">
+                <b-form-select id="article-categoryID" :options="categories" v-model="article.categoryID">
                 </b-form-select>
             </b-form-group>
             <b-form-group  v-show="mode==='save'" label="Autor:" labe-for="article-author">
-                <b-form-select id="article-imgUrl" :options="categories" v-model="article.author">
+                <b-form-select id="article-imgUrl" :options="users" v-model="article.userID">
                 </b-form-select>
+            </b-form-group>
+            <b-form-group  v-show="mode==='save'" label="Conteúdo" labe-for="article-content">
+                <VueEditor v-model="article.content" placeholder="Informe o Conteúdo do Aritigo..."/>
             </b-form-group>
             <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
             <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
@@ -36,20 +39,28 @@
                 </b-button>
             </template>
         </b-table>
+        <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit"/>
     </div>
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor"
 import { baseApiUrl, showError } from "@/global";
 import axios from "axios";
 
 export default {
     name: "ArticleAdmin",
+    components: { VueEditor },
     data: function () {
         return {
             mode: "save",
             article: {},
             articles: [],
+            categories: [],
+            users: [],
+            page: 1,
+            limit: 0,
+            count: 0,
             fields: [
                 { key: "id", label: "Código", sortable: true },
                 { key: "name", label: "Nome", sortable: true },
@@ -60,19 +71,17 @@ export default {
     },
     methods: {
         loadArticles() {
-            const url = `${baseApiUrl}/articles`;
-            axios.get(url).then((res) => {
-                this.articles = res.data.map((article) => {
-                    return {
-                        ...article,
-                        value: article.id,
-                        text: article.description,
-                    };
-                });
+            const url = `${baseApiUrl}/articles?page=${this.page}`;
+            axios.get(url).then( res => {
+                this.articles = res.data.data 
+                this.count = res.data.count
+                this.limit = res.data.limit
             });
         },
         reset() {
-            (this.mode = "save"), (this.article = {}), this.loadArticles();
+            this.mode = "save" 
+            this.article = {}
+            this.loadArticles()
         },
         save() {
             const method = this.article.id ? "put" : "post";
@@ -96,27 +105,35 @@ export default {
         },
         loadArticle(article, mode = "save") {
             this.mode = mode;
-            this.article = { ...article };
+            axios.get(`${baseApiUrl}/articles/${article.id}`)
+                .then(res=> this.article = res.data)
         },
-        loadCategories() {
-            const url = `${baseApiUrl}/categories`;
-            axios.get(url).then((res) => {
-                this.categories = res.data.map((category) => {
-                    return {
-                        ...category,
-                        value: category.id,
-                        text: category.path,
-                    };
-                });
-            });
+        loadCategories(){
+            const url = `${baseApiUrl}/categories`
+            axios.get(url).then(res =>{
+                this.categories = res.data.map(category =>{
+                    return { value: category.id, text: category.path}
+                })
+            })
         },
-        loadCategory(category, mode = "save") {
-            this.mode = mode;
-            this.category = { ...category };
+        loadUsers(){
+            const url = `${baseApiUrl}/users`
+            axios.get(url).then(res=>{
+                this.users = res.data.map(user =>{
+                    return { value: user.id, text: `${user.name} - ${user.email}`}
+                })
+            })
+        }
+    },
+    watch: {
+        page() {
+            this.loadArticles()
         }
     },
     mounted() {
-        this.loadArticles();
+        this.loadArticles()
+        this.loadCategories()
+        this.loadUsers()
     },
 };
 </script>
